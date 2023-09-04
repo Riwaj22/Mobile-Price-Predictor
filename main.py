@@ -62,12 +62,15 @@ def index():
 #         return jsonify([])  # Return an empty list if no name is provided
 
 
+
 @app.route('/predict', methods=['POST'])
 @cross_origin()
 def predict():
+    try:
+        # Get form data
         Processor = request.form.get('Processor')
         rating = float(request.form.get('rating'))
-        no = request.form.get('no')
+        no = int(request.form.get('no'))  # Cast to int if it's an integer
         RAM = float(request.form.get('RAM'))  # Cast to float
         ROM = float(request.form.get('ROM'))  # Cast to float
         f = float(request.form.get('f'))  # Cast to float
@@ -76,16 +79,30 @@ def predict():
         ty = request.form.get('ty')
         name = request.form.get('name')
 
-        # Rest of your prediction code
+        # Create a dictionary with the feature names and values
+        data_dict = {
+            'Processor': [Processor],
+            'Rating ?/5': [rating],
+            'Number of Ratings': [no],
+            'RAM': [RAM],
+            'ROM/Storage': [ROM],
+            'Front Camera': [f],
+            'Battery': [Battery],
+            'Camera Resolutions': [cam],
+            'Camera Types': [ty],
+            'Name of Phone': [name]
+        }
 
-        prediction = model.predict(pd.DataFrame(
-            columns=['Processor', 'Rating ?/5', 'Number of Ratings', 'RAM', 'ROM/Storage', 'Front Camera', 'Battery', 'Camera Resolutions',
-                     'Camera Types','Name of Phone'],
-            data=np.array(
-                [Processor, rating, no, RAM, ROM, f, Battery, cam, ty,name]).reshape(
-                    1, 10)))
+        # Create a DataFrame
+        input_data = pd.DataFrame(data_dict)
+
+        # Make the prediction
+        prediction = model.predict(input_data)
 
         return jsonify({'prediction': prediction[0]})  # Send the prediction as JSON response
+    except Exception as e:
+        return jsonify({'error': str(e)})
+
 
 
 if __name__ == "__main__":
