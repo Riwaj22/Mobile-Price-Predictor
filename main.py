@@ -101,7 +101,11 @@ def predict():
 
         return jsonify({'prediction': prediction[0]})  # Send the prediction as JSON response
     except Exception as e:
-        return jsonify({'error': str(e)})
+        # Log the error
+        app.logger.error(f'Prediction error: {str(e)}')
+
+        # Return an error response
+        return jsonify({'error': 'Prediction not available'}), 500
 
 
 
