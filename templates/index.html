@@ -221,7 +221,7 @@
 
     <!-- Modal -->
     <!-- Add a div to display the prediction value in the same window -->
-    <div id="myModal" class="modal">
+ <div id="myModal" class="modal">
         <div class="modal-content">
             <span class="close" id="closeModal">&times;</span>
             <h2>Mobile Price Prediction Result</h2>
@@ -267,40 +267,35 @@
         formElements[i].addEventListener('change', updatePredictButton);
     }
 
-    // ... (your existing code)
+    btn.onclick = function (e) {
+        e.preventDefault(); // Prevent the default form submission
 
-btn.onclick = function (e) {
-    e.preventDefault(); // Prevent the default form submission
+        if (areFieldsFilled()) {
+            // Serialize the form data
+            var formData = new FormData(form);
 
-    if (areFieldsFilled()) {
-        // Serialize the form data
-        var formData = new FormData(form);
-
-        // Send a POST request to the server using Fetch API or XMLHttpRequest
-        fetch('/predict', {
-            method: 'POST',
-            body: formData,
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                if (data.hasOwnProperty('prediction')) {
-                    // Display the prediction in the modal
-                    displayPopupPrediction(data.prediction);
-                } else {
-                    // Handle the case where the prediction is not available
-                    alert('Prediction not available.');
-                }
+            // Send a POST request to the server using Fetch API or XMLHttpRequest
+            fetch('/predict', {
+                method: 'POST',
+                body: formData,
             })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
-    } else {
-        alert('Please fill out all required fields before predicting.');
-    }
-};
-
-// ... (the rest of your existing code)
-
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.hasOwnProperty('prediction')) {
+                        // Display the prediction in the modal
+                        displayPopupPrediction(data.prediction);
+                    } else {
+                        // Handle the case where the prediction is not available
+                        alert('Prediction not available.');
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        } else {
+            alert('Please fill out all required fields before predicting.');
+        }
+    };
 
     span.onclick = function() {
         // Close the modal when the close button is clicked
