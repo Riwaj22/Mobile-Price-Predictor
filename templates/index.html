@@ -267,30 +267,40 @@
         formElements[i].addEventListener('change', updatePredictButton);
     }
 
-    btn.onclick = function(e) {
-        e.preventDefault(); // Prevent the default form submission
+    // ... (your existing code)
 
-        if (areFieldsFilled()) {
-            // Serialize the form data
-            var formData = new FormData(form);
+btn.onclick = function (e) {
+    e.preventDefault(); // Prevent the default form submission
 
-            // Send a POST request to the server using Fetch API or XMLHttpRequest
-            fetch('/predict', {
-                method: 'POST',
-                body: formData
+    if (areFieldsFilled()) {
+        // Serialize the form data
+        var formData = new FormData(form);
+
+        // Send a POST request to the server using Fetch API or XMLHttpRequest
+        fetch('/predict', {
+            method: 'POST',
+            body: formData,
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.hasOwnProperty('prediction')) {
+                    // Display the prediction in the modal
+                    displayPopupPrediction(data.prediction);
+                } else {
+                    // Handle the case where the prediction is not available
+                    alert('Prediction not available.');
+                }
             })
-            .then(response => response.json())
-            .then(data => {
-                // Display the prediction in the modal
-                displayPopupPrediction(data.prediction);
-            })
-            .catch(error => {
+            .catch((error) => {
                 console.error('Error:', error);
             });
-        } else {
-            alert('Please fill out all required fields before predicting.');
-        }
-    };
+    } else {
+        alert('Please fill out all required fields before predicting.');
+    }
+};
+
+// ... (the rest of your existing code)
+
 
     span.onclick = function() {
         // Close the modal when the close button is clicked
