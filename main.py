@@ -63,8 +63,7 @@ def index():
 
 
 
-@app.route('/predict', methods=['POST'])
-@cross_origin()
+
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
